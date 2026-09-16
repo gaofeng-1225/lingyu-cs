@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+server/.env
+server/data/*.db
+server/data/*.db-*
+
+# Node
+node_modules/
+web/dist/
+
+# 工具产物
+scripts/eval_report.json
+
+# 本地文档
+docs/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store

@@ -1,0 +1,67 @@
+{
+  "SceneConfig": {
+    "name": "通用知识助手",
+    "icon": "https://lf3-rtc-demo.volccdn.com/obj/rtc-aigc-assets/DoubaoAvatar.png",
+    "questions": [
+      "你们是做什么的？",
+      "怎么联系人工客服？"
+    ]
+  },
+  "VoiceChat": {
+    "AgentConfig": {
+      "WelcomeMessage": "您好，我是聆聆，通用知识助手，产品、服务、常见问题都可以问我～",
+      "UserId": "lingyu_general_agent",
+      "EnableConversationStateCallback": true
+    },
+    "Config": {
+      "ASRConfig": {
+        "Provider": "volcano",
+        "ProviderParams": {
+          "Mode": "bigmodel",
+          "ApiResourceId": "volc.seedasr.sauc.duration",
+          "StreamMode": 2,
+          "enable_nonstream": true,
+          "context_history_length": 3
+        },
+        "VADConfig": {
+          "SilenceTime": 600,
+          "AIVAD": false,
+          "ForceBeginThreshold": 0,
+          "ForceEnd": false,
+          "VolumeGain": 1.0
+        },
+        "InterruptConfig": {
+          "InterruptSpeechDuration": 0,
+          "InterruptKeywords": []
+        },
+        "TurnDetectionMode": 0
+      },
+      "TTSConfig": {
+        "AutoActive": true,
+        "Provider": "volcano_bidirection",
+        "ProviderParams": {
+          "ResourceId": "volc.service_type.10029",
+          "audio": {
+            "voice_type": "${TTS_VOICE_TYPE:-zh_female_linjianvhai_moon_bigtts}",
+            "speech_rate": 0
+          },
+          "Additions": {
+            "enable_latex_tn": false
+          }
+        },
+        "IgnoreBracketText": [],
+        "Context": {
+          "TagParse": false,
+          "QuoteUserQuestion": true
+        },
+        "Prefill": true,
+        "InterruptMode": 0
+      },
+      "LLMConfig": {
+        "Mode": "CustomLLM",
+        "Method": "POST"
+      },
+      "InterruptMode": 0
+    }
+  }
+}

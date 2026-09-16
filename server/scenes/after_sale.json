@@ -1,0 +1,68 @@
+{
+  "SceneConfig": {
+    "name": "售后支持助手",
+    "icon": "https://lf3-rtc-demo.volccdn.com/obj/rtc-aigc-assets/DoubaoAvatar.png",
+    "questions": [
+      "怎么申请退款？",
+      "发票怎么开？",
+      "售后多久回复？"
+    ]
+  },
+  "VoiceChat": {
+    "AgentConfig": {
+      "WelcomeMessage": "您好，我是聆聆，售后支持助手。退款、发票、售后进度都可以问我～",
+      "UserId": "lingyu_aftersale_agent",
+      "EnableConversationStateCallback": true
+    },
+    "Config": {
+      "ASRConfig": {
+        "Provider": "volcano",
+        "ProviderParams": {
+          "Mode": "bigmodel",
+          "ApiResourceId": "volc.seedasr.sauc.duration",
+          "StreamMode": 2,
+          "enable_nonstream": true,
+          "context_history_length": 3
+        },
+        "VADConfig": {
+          "SilenceTime": 600,
+          "AIVAD": false,
+          "ForceBeginThreshold": 0,
+          "ForceEnd": false,
+          "VolumeGain": 1.0
+        },
+        "InterruptConfig": {
+          "InterruptSpeechDuration": 0,
+          "InterruptKeywords": []
+        },
+        "TurnDetectionMode": 0
+      },
+      "TTSConfig": {
+        "AutoActive": true,
+        "Provider": "volcano_bidirection",
+        "ProviderParams": {
+          "ResourceId": "volc.service_type.10029",
+          "audio": {
+            "voice_type": "${TTS_VOICE_TYPE:-zh_female_linjianvhai_moon_bigtts}",
+            "speech_rate": 0
+          },
+          "Additions": {
+            "enable_latex_tn": false
+          }
+        },
+        "IgnoreBracketText": [],
+        "Context": {
+          "TagParse": false,
+          "QuoteUserQuestion": true
+        },
+        "Prefill": true,
+        "InterruptMode": 0
+      },
+      "LLMConfig": {
+        "Mode": "CustomLLM",
+        "Method": "POST"
+      },
+      "InterruptMode": 0
+    }
+  }
+}
