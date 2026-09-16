@@ -46,7 +46,7 @@
         "VisionConfig": {
           "Enable": false
         },
-        "ThinkingType": "auto"
+        "ThinkingType": "disabled"
       },
       "InterruptMode": 0
     }

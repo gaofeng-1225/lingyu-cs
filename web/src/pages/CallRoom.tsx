@@ -141,6 +141,12 @@ export default function CallRoom() {
       dispatch(setStatus({ status: 'ready' }));
     } catch (error) {
       const message = (error as Error).message || String(error);
+      if (message.includes('请先调用 getScenes')) {
+        await rtcClient.leaveRoom();
+        joinedRef.current = false;
+        navigate('/', { replace: true });
+        return;
+      }
       dispatch(setStatus({ status: 'error', errorMsg: message }));
       await rtcClient.leaveRoom();
     } finally {
