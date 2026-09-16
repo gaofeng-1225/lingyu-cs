@@ -6,9 +6,7 @@ RTC OpenAPI 代理（业务网关）
 
 关键点：
 - Action 白名单校验；
-- StartVoiceChat 时把场景中的 LLMConfig 强制注入为 CustomLLM 模式，
-  回调地址指向本服务的 /api/chat_callback，从而让 RTC 云端把
-  ASR 文本交给“聆语智服”的 AI 中枢（RAG + 大模型）处理；
+- StartVoiceChat 使用场景中配置的 ASR、LLM、TTS 参数；
 - 房间/任务维度防重复启动。
 """
 
@@ -40,20 +38,6 @@ class ProxyBody(BaseModel):
     SceneID: str
 
 
-def _inject_callback_llm_config(config: Dict[str, Any]) -> Dict[str, Any]:
-    """把 LLMConfig 切换为 CustomLLM 并指向本服务回调地址。"""
-    llm_config = config.setdefault("LLMConfig", {})
-    llm_config.update(
-        {
-            "Mode": "CustomLLM",
-            "Url": settings.callback_url,
-            "Method": "POST",
-            "ApiType": "https" if settings.SERVER_URL.startswith("https") else "http",
-        }
-    )
-    return config
-
-
 def _build_start_request(session: Session, scene_id: str) -> Dict[str, Any]:
     scene = session.scenes[scene_id]
     # 场景 JSON 中的 ${ENV_VAR} 引用在发送前展开
@@ -66,7 +50,6 @@ def _build_start_request(session: Session, scene_id: str) -> Dict[str, Any]:
         }
     )
     config = copy.deepcopy(voice_chat.get("Config", {}))
-    config = _inject_callback_llm_config(config)
 
     request_body: Dict[str, Any] = {
         "AppId": settings.RTC_APP_ID,

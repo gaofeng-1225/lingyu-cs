@@ -35,6 +35,7 @@ export default function CallRoom() {
   const dispatch = useDispatch();
   const room = useSelector((state: RootState) => state.room);
   const [joining, setJoining] = useState(false);
+  const [interruptError, setInterruptError] = useState('');
   const joinedRef = useRef(false);
   const stopRef = useRef<() => Promise<void>>(async () => undefined);
 
@@ -131,7 +132,11 @@ export default function CallRoom() {
 
       await rtcClient.joinRoom();
       await rtcClient.startMic();
-      await api.startVoiceChat({ SessionID: room.sessionId, SceneID: room.scene.id });
+      const result = await api.startVoiceChat({ SessionID: room.sessionId, SceneID: room.scene.id });
+      const error = result.ResponseMetadata.Error;
+      if (error) {
+        throw new Error(error.Message || error.Code || '启动语音对话失败');
+      }
       joinedRef.current = true;
       dispatch(setStatus({ status: 'ready' }));
     } catch (error) {
@@ -152,8 +157,14 @@ export default function CallRoom() {
     }
   };
 
-  const onInterrupt = () => {
-    rtcClient.interrupt(InterruptPriority.HIGH);
+  const onInterrupt = async () => {
+    try {
+      await rtcClient.interrupt(InterruptPriority.HIGH);
+      setInterruptError('');
+    } catch (error) {
+      console.error('RTC interrupt error:', error);
+      setInterruptError('打断指令未送达，AI 助手尚未接入房间，请结束后重新发起通话。');
+    }
   };
 
   const onEnd = async () => {
@@ -201,6 +212,12 @@ export default function CallRoom() {
         </div>
       )}
 
+      {interruptError && (
+        <div className="call-error">
+          <p>{interruptError}</p>
+        </div>
+      )}
+
       {room.autoplayFail && (
         <button
           className="autoplay-banner"
@@ -217,7 +234,7 @@ export default function CallRoom() {
         status={room.status}
         joining={joining}
         muted={room.muted}
-        canInterrupt={room.aiStage === AGENT_STAGE.SPEAKING || room.aiStage === AGENT_STAGE.THINKING}
+        canInterrupt={room.status === 'ready'}
         onStart={startCall}
         onMute={onMute}
         onInterrupt={onInterrupt}

@@ -67,9 +67,12 @@ def sign_request(
     now = now or datetime.now(timezone.utc)
     short_date = now.strftime("%Y%m%d")
     x_date = now.strftime("%Y%m%dT%H%M%SZ")
+    payload_hash = _sha256_hex(body_bytes)
 
     # 规范化 Header：只保留四项签名头，值 trim、去空白
     header_map = {k.lower(): v.strip() for k, v in headers.items()}
+    header_map["x-date"] = x_date
+    header_map["x-content-sha256"] = payload_hash
     canonical_headers = "".join(
         f"{name}:{header_map.get(name, '')}\n" for name in _SIGNED_HEADERS
     )
@@ -82,7 +85,7 @@ def sign_request(
             _urlencode_query(params),
             canonical_headers,
             signed_headers,
-            _sha256_hex(body_bytes),
+            payload_hash,
         ]
     )
 
@@ -109,7 +112,7 @@ def sign_request(
 
     signed_headers_map = {
         "X-Date": x_date,
-        "X-Content-Sha256": _sha256_hex(body_bytes),
+        "X-Content-Sha256": payload_hash,
         "Authorization": authorization,
     }
     return {"headers": signed_headers_map, "body": body_bytes}

@@ -17,49 +17,34 @@
       "ASRConfig": {
         "Provider": "volcano",
         "ProviderParams": {
-          "Mode": "bigmodel",
-          "ApiResourceId": "volc.seedasr.sauc.duration",
-          "StreamMode": 2,
-          "enable_nonstream": true,
-          "context_history_length": 3
-        },
-        "VADConfig": {
-          "SilenceTime": 600,
-          "AIVAD": false,
-          "ForceBeginThreshold": 0,
-          "ForceEnd": false,
-          "VolumeGain": 1.0
-        },
-        "InterruptConfig": {
-          "InterruptSpeechDuration": 0,
-          "InterruptKeywords": []
-        },
-        "TurnDetectionMode": 0
+          "Mode": "smallmodel",
+          "AppId": "${ASR_APP_ID}",
+          "Cluster": "${ASR_CLUSTER}"
+        }
       },
       "TTSConfig": {
-        "AutoActive": true,
-        "Provider": "volcano_bidirection",
+        "Provider": "volcano",
         "ProviderParams": {
-          "ResourceId": "volc.service_type.10029",
-          "audio": {
-            "voice_type": "${TTS_VOICE_TYPE:-zh_female_linjianvhai_moon_bigtts}",
-            "speech_rate": 0
+          "app": {
+            "appid": "${TTS_APP_ID}",
+            "cluster": "${TTS_CLUSTER}"
           },
-          "Additions": {
-            "enable_latex_tn": false
+          "audio": {
+            "voice_type": "${TTS_STREAMING_VOICE_TYPE}",
+            "speed_ratio": 1,
+            "pitch_ratio": 1,
+            "volume_ratio": 1
           }
-        },
-        "IgnoreBracketText": [],
-        "Context": {
-          "TagParse": false,
-          "QuoteUserQuestion": true
-        },
-        "Prefill": true,
-        "InterruptMode": 0
+        }
       },
       "LLMConfig": {
-        "Mode": "CustomLLM",
-        "Method": "POST"
+        "Mode": "ArkV3",
+        "EndPointId": "${RTC_ARK_ENDPOINT_ID}",
+        "SystemMessages": ["${RTC_SYSTEM_MESSAGE}"],
+        "VisionConfig": {
+          "Enable": false
+        },
+        "ThinkingType": "auto"
       },
       "InterruptMode": 0
     }

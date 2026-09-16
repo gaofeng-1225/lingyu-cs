@@ -7,7 +7,7 @@ interface ControlBarProps {
   canInterrupt: boolean;
   onStart: () => void;
   onMute: () => void;
-  onInterrupt: () => void;
+  onInterrupt: () => void | Promise<void>;
   onEnd: () => void;
 }
 
@@ -40,7 +40,7 @@ export default function ControlBar({
         </button>
         <button
           className={`btn-interrupt ${canInterrupt ? 'active' : ''}`}
-          onClick={onInterrupt}
+          onClick={() => void onInterrupt()}
           disabled={!canInterrupt}
           title="打断 AI"
         >

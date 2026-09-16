@@ -23,6 +23,9 @@ APP_ID_LENGTH = 24
 
 # 权限位（与官方一致）
 PRIV_PUBLISH_STREAM = 0
+PRIV_PUBLISH_AUDIO_STREAM = 1
+PRIV_PUBLISH_VIDEO_STREAM = 2
+PRIV_PUBLISH_DATA_STREAM = 3
 PRIV_SUBSCRIBE_STREAM = 4
 
 
@@ -72,8 +75,11 @@ def build_rtc_token(app_id: str, app_key: str, room_id: str, user_id: str,
     expire_at = now + expire_seconds
 
     privileges = {
-        PRIV_PUBLISH_STREAM: 0,   # 推流（含音频/视频/数据子权限）
-        PRIV_SUBSCRIBE_STREAM: 0,  # 拉流
+        PRIV_PUBLISH_STREAM: 0,
+        PRIV_PUBLISH_AUDIO_STREAM: 0,
+        PRIV_PUBLISH_VIDEO_STREAM: 0,
+        PRIV_PUBLISH_DATA_STREAM: 0,
+        PRIV_SUBSCRIBE_STREAM: 0,
     }
 
     msg = _pack_msg(nonce, now, expire_at, room_id, user_id, privileges)

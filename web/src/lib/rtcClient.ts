@@ -122,7 +122,7 @@ class RtcClient {
       {
         userId: UserId,
         extraInfo: JSON.stringify({
-          call_scene: 'LINGYU-AIGC',
+          call_scene: 'RTC-AIGC',
           user_name: UserId,
           user_id: UserId,
         }),
@@ -138,21 +138,21 @@ class RtcClient {
   /** 开启麦克风采集并发布音频 */
   async startMic(): Promise<void> {
     if (!this.engine) return;
+    await this.engine.publishStream(MediaType.AUDIO);
     await this.engine.startAudioCapture();
-    this.engine.publishStream(MediaType.AUDIO);
   }
 
   /** 停止麦克风采集与发布 */
   async stopMic(): Promise<void> {
     if (!this.engine) return;
     await this.engine.stopAudioCapture();
-    this.engine.unpublishStream(MediaType.AUDIO);
+    await this.engine.unpublishStream(MediaType.AUDIO);
   }
 
   /** 发送打断指令（走 RTC 数据通道，毫秒级生效） */
-  interrupt(priority: InterruptPriority = InterruptPriority.HIGH): void {
-    if (!this.engine || !this.botName) return;
-    this.engine.sendUserBinaryMessage(
+  async interrupt(priority: InterruptPriority = InterruptPriority.HIGH): Promise<void> {
+    if (!this.engine || !this.botName) throw new Error('RTC 未连接，无法发送打断指令');
+    await this.engine.sendUserBinaryMessage(
       this.botName,
       string2tlv(
         JSON.stringify({
