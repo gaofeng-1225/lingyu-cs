@@ -330,10 +330,17 @@ code {
   width: 100%;
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding: 12px 4px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.msg-list::-webkit-scrollbar {
+  display: none;
 }
 
 .msg-empty {
